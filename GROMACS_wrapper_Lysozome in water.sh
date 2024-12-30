@@ -26,19 +26,31 @@ box() {
 }
 
 solvate() {
+    echo "#######################################################"
+    echo "Adding Solvent"
+    echo "#######################################################"
     gmx solvate -cp ${ID}_newbox.gro -cs spc216.gro -o ${ID}_solv.gro -p ${ID}_topol.top
 }
 
 ions() {
+    echo "#######################################################"
+    echo "Making Ions"
+    echo "#######################################################"
     echo $1 | gmx genion -s ions.tpr -o ${ID}_solv_ions.gro -p ${ID}_topol.top -pname NA -nname CL -neutral
 }
 
 energy_minimization() {
+    echo "#######################################################"
+    echo "Minimizing energy"
+    echo "#######################################################"
     gmx grompp -f minim.mdp -c ${ID}_solv_ions.gro -p ${ID}_topol.top -o ${ID}_em.tpr
     gmx mdrun -v -deffnm ${ID}_em
 }
 
 equilibration() {
+    echo "#######################################################"
+    echo "Reaching equilibrium....."
+    echo "#######################################################"
     gmx grompp -f nvt.mdp -c ${ID}_em.gro -r ${ID}_em.gro -p ${ID}_topol.top -o ${ID}_nvt.tpr
     gmx mdrun -deffnm ${ID}_nvt
     gmx grompp -f npt.mdp -c ${ID}_nvt.gro -r ${ID}_nvt.gro -t ${ID}_nvt.cpt -p ${ID}_topol.top -o ${ID}_npt.tpr
@@ -46,6 +58,9 @@ equilibration() {
 }
 
 production() {
+    echo "#######################################################"
+    echo "Running Simulation"
+    echo "#######################################################"
     gmx grompp -f md.mdp -c ${ID}_npt.gro -t ${ID}_npt.cpt -p ${ID}_topol.top -o ${ID}_md_0_1.tpr
     gmx mdrun -deffnm ${ID}_md_0_1 -nb gpu
 }
