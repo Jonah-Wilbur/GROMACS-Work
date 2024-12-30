@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-ID=$11
+ID=$1
 MDP=$3
 SOL=${SOL:-13}
 
